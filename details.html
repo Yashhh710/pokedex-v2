@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POKÉDEX | v2</title>
+    <link rel="icon" type="image/png" href="https://img.icons8.com/?size=100&id=63307&format=png&color=000000">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-base: #0c0f0e58;
+            --text-light: #ffffff;
+            --font-editorial: 'Montserrat', sans-serif;
+            --font-display: 'Syne', sans-serif;
+            --type-color: #78c850; 
+            --type-color-rgb: 120,200,80;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--font-editorial);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body, html {
+            width: 100%;
+            min-height: 100vh;
+            color: var(--text-light);
+            background-color: var(--bg-base);
+            scroll-behavior: smooth;
+        }
+
+        /* Dynamic Background Layers */
+        .dynamic-bg-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            transition: background 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+            background: 
+                radial-gradient(circle at 75% 50%, transparent 10%, rgba(0, 0, 0, 0.45) 85%),
+                radial-gradient(circle at 80% 45%, var(--type-color) 0%, transparent 50%),
+                radial-gradient(circle at 30% 60%, rgba(0,0,0,0.3) 0%, transparent 60%),
+                linear-gradient(135deg, var(--type-color), rgba(var(--type-color-rgb), 0.5));
+        }
+
+        .grid-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 64px 64px;
+            opacity: 0.8;
+            pointer-events: none;
+            -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0) 95%);
+            mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0) 95%);
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 90px;
+            padding: 0 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            background: rgba(12, 15, 14, 0.25); 
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .back-btn-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: opacity 0.3s;
+            cursor: pointer;
+        }
+
+        .back-btn-wrapper:hover { opacity: 0.7; }
+        .back-btn-wrapper svg { fill: currentColor; }
+
+        .center-logo {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 800;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .action-icon-btn {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: #fff;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .action-icon-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: none;
+            stroke: currentColor;
+            stroke-width: 2;
+            transition: transform 0.3s ease;
+        }
+
+        .action-icon-btn:hover {
+            background: #fff;
+            color: var(--bg-base);
+            transform: translateY(-2px);
+        }
+
+        .action-icon-btn.active-fav svg {
+            fill: #ff4d4d;
+            stroke: #ff4d4d;
+        }
+
+        .master-viewport-wrapper {
+            display: flex;
+            width: 100%;
+            padding-top: 90px;
+            min-height: 100vh;
+        }
+
+        .left-hero-stage {
+            width: 40%;
+            height: calc(100vh - 90px);
+            position: sticky;
+            top: 90px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+        }
+
+        .hero-art-viewport {
+            position: relative;
+            width: 100%;
+            height: 70%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            perspective: 1200px;
+        }
+
+        .stage-aura-glow {
+            position: absolute;
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            background: var(--type-color);
+            filter: blur(120px);
+            opacity: 0.35;
+            z-index: 1;
+            animation: pulseGlow 6s ease-in-out infinite alternate;
+        }
+
+        @keyframes pulseGlow {
+            0% { transform: scale(1); opacity: 0.25; }
+            100% { transform: scale(1.2); opacity: 0.45; }
+        }
+
+        .main-hero-render {
+            max-width: 85%;
+            max-height: 85%;
+            object-fit: contain;
+            z-index: 5;
+            filter: drop-shadow(0px 25px 35px rgba(0,0,0,0.35));
+            animation: gentleFloat 5s ease-in-out infinite alternate;
+            transform-style: preserve-3d;
+            transition: transform 0.2s ease-out;
+        }
+
+        @keyframes gentleFloat {
+            0% { transform: translateY(0px); }
+            100% { transform: translateY(-15px); }
+        }
+
+        .hero-meta-block {
+            text-align: center;
+            margin-top: 20px;
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .specimen-idx {
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 4px;
+            opacity: 0.5;
+        }
+
+        .specimen-title {
+            font-family: var(--font-display);
+            font-size: 3rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: -1px;
+            margin: 5px 0 15px;
+        }
+
+        .cry-button-anchor {
+            background: #fff;
+            color: var(--bg-base);
+            border: none;
+            padding: 12px 26px;
+            font-weight: 700;
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: transform 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .cry-button-anchor:hover { transform: scale(1.05); }
+        .cry-button-anchor svg { width: 14px; height: 14px; fill: currentColor; }
+
+        .right-data-stream {
+            width: 60%;
+            padding: 60px;
+            display: flex;
+            flex-direction: column;
+            gap: 80px;
+        }
+
+        .data-card-grid {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .section-headline {
+            font-family: var(--font-display);
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 30px;
+            border-left: 4px solid var(--type-color);
+            padding-left: 15px;
+        }
+
+        .quick-metrics-box {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .metric-cell {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.04);
+            padding: 20px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .metric-label {
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            opacity: 0.4;
+            margin-top: 5px;
+        }
+
+        .stat-linear-track {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .stat-node {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .lbl-axis {
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            width: 140px;
+            opacity: 0.5;
+        }
+
+        .bar-viewport {
+            flex-grow: 1;
+            height: 6px;
+            background: rgba(255,255,255,0.06);
+            margin: 0 20px;
+            position: relative;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .bar-fill-index {
+            height: 100%;
+            background: var(--type-color);
+            width: 0%;
+            transition: width 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .val-axis {
+            font-size: 0.85rem;
+            font-weight: 700;
+            width: 40px;
+            text-align: right;
+        }
+
+        .moves-search-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            color: #fff;
+            padding: 12px 20px;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            outline: none;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+
+        .moves-search-input:focus {
+            border-color: var(--type-color);
+        }
+
+        .table-scroll-frame {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid var(--glass-border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.8rem;
+        }
+
+        th {
+            background: rgba(0,0,0,0.3);
+            padding: 14px 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+            opacity: 0.7;
+        }
+
+        td {
+            padding: 12px 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+            text-transform: uppercase;
+        }
+
+        tr:hover td {
+            background: rgba(255,255,255,0.02);
+        }
+
+        .evolution-flow-line {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            padding: 20px 0;
+        }
+
+        .evo-stage-node {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--glass-border);
+            padding: 20px;
+            border-radius: 8px;
+            min-width: 150px;
+            text-decoration: none;
+            color: inherit;
+            transition: transform 0.3s;
+        }
+
+        .evo-stage-node:hover {
+            transform: translateY(-5px);
+            background: rgba(255,255,255,0.04);
+        }
+
+        .evo-stage-node img {
+            width: 90px;
+            height: 90px;
+            object-fit: contain;
+            filter: drop-shadow(0px 10px 15px rgba(0,0,0,0.2));
+        }
+
+        .evo-name {
+            font-family: var(--font-display);
+            font-size: 0.9rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-top: 10px;
+        }
+
+        .evo-vector-arrow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: arrowPulse 1.5s infinite alternate;
+        }
+
+        .evo-vector-arrow svg {
+            width: 20px;
+            height: 20px;
+            fill: var(--type-color);
+            stroke: var(--type-color);
+        }
+
+        @keyframes arrowPulse {
+            0% { transform: translateX(0); opacity: 0.4; }
+            100% { transform: translateX(6px); opacity: 1; }
+        }
+
+        .matrix-chip-flex {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .matrix-chip {
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 8px 14px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            color: #111312;
+            font-weight: 800;
+        }
+
+        .effectiveness-group {
+            margin-bottom: 20px;
+        }
+
+        .effectiveness-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.5;
+            margin-bottom: 8px;
+        }
+
+        @media (max-width: 1024px) {
+            .master-viewport-wrapper { flex-direction: column; }
+            .left-hero-stage { width: 100%; height: auto; position: relative; top: 0; padding-top: 40px; }
+            .right-data-stream { width: 100%; padding: 30px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="bg-canvas" class="dynamic-bg-canvas"></div>
+    <div class="grid-overlay"></div>
+
+    <header>
+        <a href="gallery.html" class="back-btn-wrapper">
+            <svg width="16" height="16" viewBox="0 0 24 24"><path d="M16.67 0l2.83 2.829-9.339 9.175 9.339 9.167-2.83 2.829-12.17-11.996z"/></svg>
+            Gallery
+        </a>
+        <div class="center-logo">POKÉDEX</div>
+        <div class="header-actions">
+            <button id="fav-btn" class="action-icon-btn" onclick="toggleFavorite()">
+                <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" stroke="currentColor" fill="none"/></svg>
+            </button>
+            <button class="action-icon-btn" onclick="loadRandomSpecimen()">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="1.5" fill="currentColor"/><circle cx="8" cy="12" r="1.5" fill="currentColor"/><circle cx="16" cy="12" r="1.5" fill="currentColor"/></svg>
+            </button>
+        </div>
+    </header>
+
+    <div class="master-viewport-wrapper">
+        <section class="left-hero-stage">
+            <div class="hero-art-viewport" id="tilt-viewport">
+                <div class="stage-aura-glow"></div>
+                <img id="hero-artwork" class="main-hero-render" src="" alt="Specimen Render Asset">
+            </div>
+            <div class="hero-meta-block">
+                <span id="meta-index" class="specimen-idx">REF. #0000</span>
+                <h1 id="meta-name" class="specimen-title">SPECIMEN</h1>
+                <button class="cry-button-anchor" onclick="playAudioCry()">
+                    <svg viewBox="0 0 24 24"><path d="M5 9v6h4l5 5V4l-5 5H5zm11.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+                    Play Audio Cry
+                </button>
+            </div>
+        </section>
+
+        <main class="right-data-stream">
+            <div class="data-card-grid">
+                <h2 class="section-headline">Historical Profile Archive</h2>
+                <div class="quick-metrics-box">
+                    <div class="metric-cell">
+                        <div id="val-height" class="metric-value">—</div>
+                        <div class="metric-label">Height Dimension</div>
+                    </div>
+                    <div class="metric-cell">
+                        <div id="val-weight" class="metric-value">—</div>
+                        <div class="metric-label">Weight Profile</div>
+                    </div>
+                    <div class="metric-cell">
+                        <div id="val-experience" class="metric-value">—</div>
+                        <div class="metric-label">Base Yield EXP</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="data-card-grid">
+                <h2 class="section-headline">Performance Diagnostics</h2>
+                <div id="stats-target-container" class="stat-linear-track"></div>
+            </div>
+
+            <div class="data-card-grid">
+                <h2 class="section-headline">Elemental Damage Matrix Mapping</h2>
+                <div id="effectiveness-target"></div>
+            </div>
+
+            <div class="data-card-grid">
+                <h2 class="section-headline">Evolutionary Timeline Chain</h2>
+                <div id="evolution-timeline-container" class="evolution-flow-line"></div>
+            </div>
+
+            <div class="data-card-grid">
+                <h2 class="section-headline">Tactical Training Moves Index</h2>
+                <input type="text" id="moves-filter" class="moves-search-input" placeholder="Filter Tactical Moves Portfolio Name...">
+                <div class="table-scroll-frame">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Combat Move</th>
+                                <th>Method</th>
+                                <th>Power</th>
+                                <th>PP</th>
+                            </tr>
+                        </thead>
+                        <tbody id="moves-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const colorRegistryHex = {
+            grass: '#73C78D', fire: '#FA8F5C', water: '#71A6E3', electric: '#F7DB59',
+            ghost: '#8F7ED1', psychic: '#FA8EC6', ice: '#B5EFF2', dragon: '#7F88FA',
+            rock: '#BFA873', ground: '#E8BF7D', steel: '#B7C9DB', fairy: '#FFC7ED',
+            poison: '#B073DB', flying: '#9CC5FA', bug: '#A8D968', normal: '#D6D2BF'
+        };
+
+        const rgbTypeMapping = {
+            grass: '115,199,141', fire: '250,143,92', water: '113,166,227', electric: '247,219,89',
+            ghost: '143,126,209', psychic: '250,142,198', ice: '181,239,242', dragon: '127,136,250',
+            rock: '191,168,115', ground: '232,191,125', steel: '183,201,219', fairy: '#FFC7ED',
+            poison: '176,115,219', flying: '156,197,250', bug: '168,217,104', normal: '214,210,191'
+        };
+
+        let currentCryUrl = "";
+        let favoriteRegistry = JSON.parse(localStorage.getItem('pokedex_showroom_favorites')) || [];
+        let currentPokemonId = null;
+
+        function getSpecimenQueryId() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('id') || '1';
+        }
+
+        const stage = document.getElementById('tilt-viewport');
+        const art = document.getElementById('hero-artwork');
+        
+        if(stage) {
+            stage.addEventListener('mousemove', (e) => {
+                const box = stage.getBoundingClientRect();
+                const x = e.clientX - box.left - (box.width/2);
+                const y = e.clientY - box.top - (box.height/2);
+                art.style.transform = `rotateY(${x / 10}deg) rotateX(${-y / 10}deg) scale(1.05)`;
+            });
+            stage.addEventListener('mouseleave', () => {
+                art.style.transform = `rotateY(0deg) rotateX(0deg) scale(1)`;
+            });
+        }
+
+        async function processSpecimenCoreArchitecture() {
+            const currentId = getSpecimenQueryId();
+            currentPokemonId = currentId;
+            
+            try {
+                const pokeRes = await fetch(`https://pokeapi.co/api/v2/pokemon/${currentId}`);
+                const pokemon = await pokeRes.json();
+                
+                const speciesRes = await fetch(pokemon.species.url);
+                const species = await speciesRes.json();
+
+                const primaryType = pokemon.types[0].type.name;
+                const dynamicRGB = rgbTypeMapping[primaryType] || '168,168,120';
+                const hexColor = colorRegistryHex[primaryType] || '#fff';
+                
+                document.documentElement.style.setProperty('--type-color', hexColor);
+                document.documentElement.style.setProperty('--type-color-rgb', dynamicRGB);
+
+                document.getElementById('meta-index').innerText = `REF. #${String(pokemon.id).padStart(4, '0')}`;
+                document.getElementById('meta-name').innerText = pokemon.name.toUpperCase();
+                document.getElementById('hero-artwork').src = pokemon.sprites.other['official-artwork'].front_default || pokemon.sprites.front_default;
+                
+                document.getElementById('val-height').innerText = `${(pokemon.height / 10).toFixed(1)} m`;
+                document.getElementById('val-weight').innerText = `${(pokemon.weight / 10).toFixed(1)} kg`;
+                document.getElementById('val-experience').innerText = pokemon.base_experience || 'N/A';
+
+                currentCryUrl = pokemon.cries ? (pokemon.cries.latest || pokemon.cries.legacy) : "";
+
+                const statsTarget = document.getElementById('stats-target-container');
+                statsTarget.innerHTML = "";
+                pokemon.stats.forEach(s => {
+                    const row = document.createElement('div');
+                    row.className = 'stat-node';
+                    const fillPercent = Math.min((s.base_stat / 160) * 100, 100);
+                    row.innerHTML = `
+                        <span class="lbl-axis">${s.stat.name.replace('-', ' ')}</span>
+                        <div class="bar-viewport"><div class="bar-fill-index" style="width: 0%" data-fill="${fillPercent}%"></div></div>
+                        <span class="val-axis">${s.base_stat}</span>
+                    `;
+                    statsTarget.appendChild(row);
+                });
+
+                setTimeout(() => {
+                    document.querySelectorAll('.bar-fill-index').forEach(bar => {
+                        bar.style.width = bar.getAttribute('data-fill');
+                    });
+                }, 100);
+
+                calculateTypeWeaknessMatrix(pokemon.types);
+                fetchEvolutionTimelineDataChain(species.evolution_chain.url);
+                populateMovesDataMatrix(pokemon.moves);
+                updateFavoriteButtonUI();
+
+            } catch (err) {
+                console.error("Critical specimen compilation error:", err);
+            }
+        }
+
+        function playAudioCry() {
+            if (currentCryUrl) {
+                const audio = new Audio(currentCryUrl);
+                audio.volume = 0.4;
+                audio.play();
+            }
+        }
+
+        async function calculateTypeWeaknessMatrix(types) {
+            const container = document.getElementById('effectiveness-target');
+            container.innerHTML = "";
+            let damageFactors = {};
+            
+            for (let t of types) {
+                const typeRes = await fetch(`https://pokeapi.co/api/v2/type/${t.type.name}`);
+                const typeData = await typeRes.json();
+                
+                typeData.damage_relations.double_damage_from.forEach(d => {
+                    damageFactors[d.name] = (damageFactors[d.name] || 1) * 2;
+                });
+                typeData.damage_relations.half_damage_from.forEach(d => {
+                    damageFactors[d.name] = (damageFactors[d.name] || 1) * 0.5;
+                });
+                typeData.damage_relations.no_damage_from.forEach(d => {
+                    damageFactors[d.name] = 0;
+                });
+            }
+
+            const groupings = { '4x Weakness': [], '2x Weakness': [], '0.5x Resistance': [], 'Immune': [] };
+            for (let key in damageFactors) {
+                if (damageFactors[key] === 4) groupings['4x Weakness'].push(key);
+                else if (damageFactors[key] === 2) groupings['2x Weakness'].push(key);
+                else if (damageFactors[key] === 0.5) groupings['0.5x Resistance'].push(key);
+                else if (damageFactors[key] === 0) groupings['Immune'].push(key);
+            }
+
+            for (let label in groupings) {
+                if (groupings[label].length > 0) {
+                    const section = document.createElement('div');
+                    section.className = 'effectiveness-group';
+                    section.innerHTML = `<div class="effectiveness-title">${label}</div><div class="matrix-chip-flex" id="chips-${label.replace(' ', '-')}"></div>`;
+                    container.appendChild(section);
+                    
+                    const flex = document.getElementById(`chips-${label.replace(' ', '-')}`);
+                    groupings[label].forEach(type => {
+                        const chip = document.createElement('span');
+                        chip.className = 'matrix-chip';
+                        chip.style.backgroundColor = colorRegistryHex[type] || '#eee';
+                        chip.innerText = type;
+                        flex.appendChild(chip);
+                    });
+                }
+            }
+        }
+
+        async function fetchEvolutionTimelineDataChain(chainUrl) {
+            const container = document.getElementById('evolution-timeline-container');
+            container.innerHTML = "";
+            
+            try {
+                const res = await fetch(chainUrl);
+                const chainData = await res.json();
+                let currentLink = chainData.chain;
+                
+                while (currentLink) {
+                    const pokemonName = currentLink.species.name;
+                    const spriteRes = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonName}`);
+                    const spriteData = await spriteRes.json();
+                    const imgUrl = spriteData.sprites.other['official-artwork'].front_default || spriteData.sprites.front_default;
+
+                    const node = document.createElement('a');
+                    node.href = `details.html?id=${spriteData.id}`;
+                    node.className = 'evo-stage-node';
+                    node.innerHTML = `
+                        <img src="${imgUrl}" alt="${pokemonName}">
+                        <div class="evo-name">${pokemonName}</div>
+                    `;
+                    container.appendChild(node);
+
+                    if (currentLink.evolves_to.length > 0) {
+                        const arrow = document.createElement('span');
+                        arrow.className = 'evo-vector-arrow';
+                        arrow.innerHTML = `<svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+                        container.appendChild(arrow);
+                        currentLink = currentLink.evolves_to[0];
+                    } else {
+                        currentLink = null;
+                    }
+                }
+            } catch(e) {
+                console.error("Evolutionary tree tracking timeline fault:", e);
+            }
+        }
+
+        function populateMovesDataMatrix(moves) {
+            const tbody = document.getElementById('moves-table-body');
+            tbody.innerHTML = "";
+
+            moves.slice(0, 70).forEach(m => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>${m.move.name.replace('-', ' ')}</strong></td>
+                    <td>${m.version_group_details[0].move_learn_method.name}</td>
+                    <td>${m.version_group_details[0].level_learned_at || '—'}</td>
+                    <td>Class portfolio</td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            document.getElementById('moves-filter').addEventListener('input', (e) => {
+                const filterText = e.target.value.toLowerCase();
+                document.querySelectorAll('#moves-table-body tr').forEach(r => {
+                    r.style.display = r.innerText.toLowerCase().includes(filterText) ? '' : 'none';
+                });
+            });
+        }
+
+        function loadRandomSpecimen() {
+            const randId = Math.floor(Math.random() * 1025) + 1;
+            window.location.href = `details.html?id=${randId}`;
+        }
+
+        function toggleFavorite() {
+            if (!currentPokemonId) return;
+            const idx = favoriteRegistry.indexOf(parseInt(currentPokemonId));
+            if (idx === -1) {
+                favoriteRegistry.push(parseInt(currentPokemonId));
+            } else {
+                favoriteRegistry.splice(idx, 1);
+            }
+            localStorage.setItem('pokedex_showroom_favorites', JSON.stringify(favoriteRegistry));
+            updateFavoriteButtonUI();
+        }
+
+        function updateFavoriteButtonUI() {
+            const favBtn = document.getElementById('fav-btn');
+            if (currentPokemonId && favoriteRegistry.includes(parseInt(currentPokemonId))) {
+                favBtn.classList.add('active-fav');
+            } else {
+                favBtn.classList.remove('active-fav');
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', processSpecimenCoreArchitecture);
+    </script>
+</body>
+</html>

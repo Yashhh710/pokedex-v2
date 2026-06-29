@@ -1,0 +1,1295 @@
+<!--
+██████╗  ██████╗ ██╗  ██╗███████╗██████╗ ███████╗██╗  ██╗
+██╔══██╗██╔═══██╗██║ ██╔╝██╔════╝██╔══██╗██╔════╝╚██╗██╔╝
+██████╔╝██║   ██║█████╔╝ █████╗  ██║  ██║█████╗   ╚███╔╝ 
+██╔═══╝ ██║   ██║██╔═██╗ ██╔══╝  ██║  ██║██╔══╝   ██╔██╗ 
+██║     ╚██████╔╝██║  ██╗███████╗██████╔╝███████╗██╔╝ ██╗
+╚═╝      ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═════╝ ╚══════╝╚═╝  ╚═╝
+
+Pokédex Universe v2 — Created by Yash
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POKÉDEX | v2</title>
+    <link rel="icon" type="image/png" href="https://img.icons8.com/?size=100&id=63307&format=png&color=000000">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Dynamic Interpolated Style Foundations (Managed by Engine Loop) */
+            --type-main: #C89B58;
+            --type-light: #E1BF86;
+            --type-dark: #966E35;
+            --type-glow: rgba(200, 155, 88, 0.25);
+            
+            --text-color: #ffffff;
+            --font-editorial: 'Montserrat', sans-serif;
+            --font-display: 'Syne', sans-serif;
+            
+            /* Matrix Parallax Interpolation Constants */
+            --bg-para-x: 0px;
+            --bg-para-y: 0px;
+            --fg-para-x: 0px;
+            --fg-para-y: 0px;
+            --tilt-rX: 0deg;
+            --tilt-rY: 0deg;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: var(--font-editorial);
+            -webkit-font-smoothing: antialiased;
+            user-select: none;
+        }
+
+        body, html {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #0c0f0e;
+            color: var(--text-color);
+        }
+
+        /* ==========================================================================
+           CINEMATIC STAGE LAYER STACK
+           ========================================================================== */
+
+        /* Layer 1: Enhanced Fashion Showroom Gradient Canvas Base */
+        .stage-gradient-base {
+            position: absolute;
+            top: -10%;
+            left: -10%;
+            width: 120%;
+            height: 120%;
+            background: 
+                radial-gradient(circle at 75% 50%, transparent 10%, rgba(0, 0, 0, 0.45) 85%),
+                radial-gradient(circle at 80% 45%, var(--type-light) 0%, transparent 50%),
+                radial-gradient(circle at 30% 60%, rgba(0,0,0,0.3) 0%, transparent 60%),
+                linear-gradient(135deg, var(--type-main), var(--type-dark));
+            will-change: transform;
+            transform: translate(var(--bg-para-x), var(--bg-para-y));
+            z-index: 1;
+        }
+
+        /* Layer 2: Volumetric Pulsing Showcase Light Hub */
+        .stage-spotlight-core {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 75% 50%, var(--type-light) 0%, transparent 60%);
+            opacity: 0.35;
+            mix-blend-mode: screen;
+            pointer-events: none;
+            z-index: 2;
+            will-change: transform;
+            transform: translate(calc(var(--fg-para-x) * 1.4), calc(var(--fg-para-y) * 1.4));
+            animation: lightPulseBreath 8s ease-in-out infinite;
+        }
+
+        @keyframes lightPulseBreath {
+            0%, 100% { opacity: 0.3; transform: translate(calc(var(--fg-para-x) * 1.2), calc(var(--fg-para-y) * 1.2)) scale(1); }
+            50% { opacity: 0.42; transform: translate(calc(var(--fg-para-x) * 1.5), calc(var(--fg-para-y) * 1.5)) scale(1.1); }
+        }
+
+        /* Layer 3: Dynamic Micro Square Grid Overlay */
+        .stage-structural-grid {
+            position: absolute;
+            top: -5%;
+            left: -5%;
+            width: 110%;
+            height: 110%;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 64px 64px;
+            pointer-events: none;
+            z-index: 3;
+            will-change: transform;
+            transform: translate(calc(var(--bg-para-x) * -0.5), calc(var(--bg-para-y) * -0.5));
+            -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0) 95%);
+            mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0) 95%);
+        }
+
+        /* Layer 4: Spatial Vignette Depth Trim */
+        .stage-vignette-haze {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, transparent 30%, rgba(0, 0, 0, 0.3) 100%);
+            pointer-events: none;
+            z-index: 6;
+        }
+
+        /* Layer 5: Film Grain Matrix Canvas Shading */
+        .stage-matte-grain {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.02;
+            mix-blend-mode: overlay;
+            pointer-events: none;
+            z-index: 7;
+        }
+
+        .page-transition-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #ffffff;
+            opacity: 0;
+            visibility: hidden;
+            z-index: 1200;
+            pointer-events: none;
+            transition: opacity 0.36s ease, visibility 0.36s ease;
+        }
+
+        .page-transition-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* ==========================================================================
+           EDITORIAL TOP LEVEL INTERFACE (CENTERED LOGO BRACKET)
+           ========================================================================== */
+
+        header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 40px 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .nav-cluster-left {
+            display: flex;
+            align-items: center;
+            z-index: 10;
+            gap: 16px;
+        }
+
+        .menu-action {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        .menu-action span {
+            display: block;
+            width: 28px;
+            height: 1px;
+            background-color: var(--text-color);
+        }
+
+        .gallery-action-btn {
+            padding: 10px 18px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-color);
+            background-color: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 999px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .gallery-action-btn:hover {
+            background-color: rgba(255, 255, 255, 0.16);
+            transform: translateY(-1px);
+        }
+
+        /* Strictly Centered Premium Showroom Brand Box */
+        .center-logo-container {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: auto;
+        }
+
+        .brand-showroom-logo {
+            font-family: var(--font-editorial);
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            padding: 7px 24px 7px 32px;
+            color: var(--text-color);
+            text-decoration: none;
+            display: inline-block;
+            transition: border-color 0.4s ease, background-color 0.4s ease, transform 0.3s ease;
+        }
+        
+        .brand-showroom-logo:hover {
+            border-color: var(--text-color);
+            background-color: rgba(255, 255, 255, 0.05);
+            transform: scale(1.02);
+        }
+
+        .nav-cluster-right {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            z-index: 10;
+        }
+
+        .nav-icon-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-color);
+            opacity: 0.75;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-icon-btn:hover {
+            opacity: 1;
+            transform: translateY(-2px);
+        }
+
+        .nav-icon-btn svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+        
+        .nav-icon-btn.active-fav svg {
+            fill: #ff4d4d;
+            color: #ff4d4d;
+        }
+
+        /* ==========================================================================
+           CORE LAYOUT FRAMEWORK
+           ========================================================================== */
+
+        main {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            padding: 0 6% 0 7%;
+            z-index: 10;
+        }
+
+        /* LEFT COLUMN EDITORIAL CANVAS */
+        .content-editorial-container {
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            z-index: 20;
+            padding-top: 60px;
+            overflow-y: visible;
+        }
+        .content-editorial-container::-webkit-scrollbar { display: none; }
+
+        .meta-index-ticker {
+            font-family: var(--font-editorial);
+            font-size: 3.4rem;
+            font-weight: 300;
+            letter-spacing: -2px;
+            line-height: 1;
+            opacity: 0.35;
+            margin-bottom: 5px;
+        }
+
+        /* Fixed Overlap Container Box */
+        .hero-name-track {
+            position: relative;
+            min-height: clamp(5rem, 10vw, 7rem);
+            margin-bottom: 35px;
+            overflow: visible;
+        }
+
+        .hero-name-track h1 {
+            position: absolute;
+            top: 0;
+            left: 0;
+            font-family: var(--font-display);
+            font-size: clamp(3rem, 5vw, 5.2rem);
+            font-weight: 800;
+            line-height: 1.0;
+            text-transform: uppercase;
+            letter-spacing: -1px;
+            white-space: nowrap;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1), transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .hero-name-track h1.active { opacity: 1; transform: translateY(0); }
+        .hero-name-track h1.exit { opacity: 0; transform: translateY(-20px); }
+
+        .editorial-sub-badge-track {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .type-pill-badge {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            padding: 6px 18px;
+            background-color: rgba(255, 255, 255, 0.12);
+            border-left: 3px solid var(--type-light);
+            transition: border-color 0.5s ease;
+        }
+
+        .form-editorial-label {
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            opacity: 0.6;
+        }
+
+        /* TECHNICAL SPECIFICATION SPECS GRID */
+        .specifications-panel {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px 40px;
+            max-width: 520px;
+            margin-bottom: 35px;
+        }
+
+        .spec-item-node {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 10px;
+        }
+
+        .spec-label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            opacity: 0.4;
+            margin-bottom: 6px;
+        }
+
+        .spec-value {
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .biography-paragraph {
+            grid-column: span 2;
+            font-size: 0.88rem;
+            line-height: 1.7;
+            font-weight: 400;
+            opacity: 0.75;
+            max-width: 480px;
+            margin-top: 5px;
+        }
+
+        /* METRIC LEVEL TRACKS */
+        .stat-metrics-matrix {
+            max-width: 520px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .metric-bar-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .metric-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.68rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .metric-label-node { opacity: 0.5; }
+        .metric-value-node { font-weight: 500; opacity: 0.9; }
+
+        .metric-track-rail {
+            width: 100%;
+            height: 2px;
+            background-color: rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-fill-core {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 0%;
+            background-color: var(--type-light);
+            transition: width 1.2s cubic-bezier(0.25, 1, 0.5, 1), background-color 0.5s ease;
+        }
+
+        /* RIGHT SHOWCASE VIEWPORT */
+        .showcase-viewport-container {
+            width: 50%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            z-index: 15;
+            perspective: 1000px;
+        }
+
+        .artwork-space-envelope {
+            position: relative;
+            width: 100%;
+            height: 70vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transform-style: preserve-3d;
+            will-change: transform;
+            transform: translate(var(--fg-para-x), var(--fg-para-y)) rotateX(var(--tilt-rX)) rotateY(var(--tilt-rY));
+        }
+
+        .showcase-blur-glow {
+            position: absolute;
+            width: 480px;
+            height: 480px;
+            border-radius: 50%;
+            background: var(--type-main);
+            filter: blur(140px);
+            opacity: 0.4;
+            pointer-events: none;
+            z-index: 1;
+            transition: background 0.6s ease;
+        }
+
+        .pokemon-render-asset {
+            position: absolute;
+            max-width: 80%;
+            max-height: 52vh;
+            object-fit: contain;
+            filter: drop-shadow(0px 30px 40px rgba(0, 0, 0, 0.4));
+            opacity: 0;
+            transform: translateX(-60px) scale(0.9) translateZ(30px);
+            transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        .pokemon-render-asset.active {
+            opacity: 1;
+            transform: translateX(0) scale(1) translateZ(30px);
+            animation: elegantFloatingCycle 6s ease-in-out infinite 0.8s;
+        }
+
+        .pokemon-render-asset.exit {
+            opacity: 0;
+            transform: translateX(60px) scale(0.9) translateZ(30px);
+        }
+
+        @keyframes elegantFloatingCycle {
+            0%, 100% { transform: translateY(0px) rotate(0deg) translateZ(30px); }
+            50% { transform: translateY(-15px) rotate(-1deg) translateZ(45px); }
+        }
+
+        .studio-floor-projection-shadow {
+            position: absolute;
+            bottom: 8%;
+            width: 55%;
+            height: 20px;
+            background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.4) 0%, transparent 75%);
+            filter: blur(12px);
+            opacity: 0;
+            transform: scale(0.6);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .studio-floor-projection-shadow.active {
+            opacity: 1;
+            transform: scale(1);
+            animation: projectionShadowPulse 6s ease-in-out infinite 0.8s;
+        }
+
+        @keyframes projectionShadowPulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(0.85); opacity: 0.6; }
+        }
+
+        /* Asset Variation Controls */
+        .variation-editorial-dock {
+            position: absolute;
+            bottom: 45px;
+            right: 60px;
+            display: flex;
+            gap: 25px;
+            z-index: 110;
+        }
+
+        .variation-toggle-btn {
+            background: none;
+            border: none;
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--text-color);
+            opacity: 0.4;
+            cursor: pointer;
+            padding-bottom: 4px;
+            border-bottom: 1px solid transparent;
+            transition: opacity 0.3s ease, border-color 0.3s ease;
+        }
+
+        .variation-toggle-btn.selected-node {
+            opacity: 1;
+            border-color: var(--text-color);
+        }
+
+        /* ==========================================================================
+           MODAL FLOATING SEARCH OVERLAY ARCHITECTURE
+           ========================================================================== */
+
+        .search-overlay-curtain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(12, 15, 14, 0.97);
+            backdrop-filter: blur(25px);
+            z-index: 500;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .search-overlay-curtain.revealed-curtain {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .search-panel-box {
+            width: 90%;
+            max-width: 750px;
+            position: relative;
+            transform: translateY(30px);
+            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .search-overlay-curtain.revealed-curtain .search-panel-box {
+            transform: translateY(0);
+        }
+
+        .search-input-field {
+            width: 100%;
+            background: none;
+            border: none;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 15px 0;
+            font-size: 2.2rem;
+            font-weight: 300;
+            color: var(--text-color);
+            letter-spacing: 1px;
+            outline: none;
+            transition: border-color 0.4s ease;
+        }
+
+        .search-input-field:focus {
+            border-color: var(--text-color);
+        }
+
+        .search-utilities-row {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+        
+        .search-caption-info {
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+            opacity: 0.4;
+            text-transform: uppercase;
+        }
+
+        .random-engine-trigger {
+            background: none;
+            border: none;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-color);
+            cursor: pointer;
+            opacity: 0.6;
+            transition: opacity 0.3s ease;
+        }
+        .random-engine-trigger:hover { opacity: 1; }
+
+        .suggestions-dropdown-grid {
+            margin-top: 40px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            max-height: 320px;
+            overflow-y: auto;
+            width: 100%;
+            padding-right: 5px;
+        }
+        
+        .suggestions-dropdown-grid::-webkit-scrollbar { width: 2px; }
+        .suggestions-dropdown-grid::-webkit-scrollbar-thumb { background-color: rgba(255, 255, 255, 0.2); }
+
+        .suggestion-item-card {
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 14px 20px;
+            cursor: pointer;
+            text-align: left;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .suggestion-item-card:hover {
+            background-color: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .suggestion-name-label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .suggestion-index-label {
+            font-size: 0.75rem;
+            opacity: 0.3;
+        }
+
+        .close-curtain-btn {
+            position: absolute;
+            top: 45px;
+            right: 60px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-color);
+            opacity: 0.5;
+            transition: opacity 0.3s ease;
+        }
+        .close-curtain-btn:hover { opacity: 1; }
+        .close-curtain-btn svg { width: 22px; height: 22px; fill: currentColor; }
+
+        /* SYSTEM INITIALIZING VEIL */
+        .global-environment-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #0c0f0e;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        
+        .loader-status-text {
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            opacity: 0.6;
+            margin-top: 20px;
+            animation: textPulseFade 2s infinite ease-in-out;
+        }
+
+        @keyframes textPulseFade {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.7; }
+        }
+
+        .loader-spinner-ring {
+            position: relative;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(to bottom, #d32f2f 52%, #ffffff 52%);
+            border: 3px solid rgba(255, 255, 255, 0.15);
+            box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.18);
+            overflow: hidden;
+            animation: pokeballSpin 1.2s linear infinite;
+        }
+
+        .loader-spinner-ring::before {
+            content: '';
+            position: absolute;
+            top: calc(50% - 4px);
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: #000;
+            z-index: 1;
+        }
+
+        .pokeball-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 4px solid #000;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+            box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.12);
+        }
+
+        @keyframes pokeballSpin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="canvas-gradient" class="stage-gradient-base"></div>
+    <div id="canvas-spotlight" class="stage-spotlight-core"></div>
+    <div id="canvas-grid" class="stage-structural-grid"></div>
+    <div class="stage-vignette-haze"></div>
+    <canvas id="matte-grain-canvas" class="stage-matte-grain"></canvas>
+
+    <header>
+        <div class="nav-cluster-left">
+            <button class="menu-action" aria-label="Open Navigation Matrix">
+                <span></span>
+                <span style="margin-top: 2px; width: 20px;"></span>
+            </button>
+            <button id="gallery-btn" class="gallery-action-btn" type="button">Gallery</button>
+        </div>
+        
+        <div class="center-logo-container">
+            <a href="#" class="brand-showroom-logo">POKÉDEX</a>
+        </div>
+
+        <div class="nav-cluster-right">
+            <button id="dock-search-btn" class="nav-icon-btn" aria-label="Search Showroom Engine">
+                <svg viewBox="0 0 24 24"><path d="M9.5,3A6.5,6.5 0 0,1 16,9.5C16,11.11 15.41,12.59 14.44,13.73L14.71,14H15.5L20.5,19L19,20.5L14,15.5V14.71L13.73,14.44C12.59,15.41 11.11,16 9.5,16A6.5,6.5 0 0,1 3,9.5A6.5,6.5 0 0,1 9.5,3M9.5,5C7,5 5,7 5,9.5C5,12 7,14 9.5,14C12,14 14,12 14,9.5C14,7 12,5 9.5,5Z"/></svg>
+            </button>
+            <button id="dock-favorite-btn" class="nav-icon-btn" aria-label="Favorite Current Showpiece">
+                <svg viewBox="0 0 24 24"><path d="M12,21.35L10.55,20.03C5.4,15.36 2,12.27 2,8.5C2,5.41 4.42,3 7.5,3C9.24,3 10.91,3.81 12,5.08C13.09,3.81 14.76,3 16.5,3C19.58,3 22,5.41 22,8.5C22,12.27 18.6,15.36 13.45,20.03L12,21.35Z"/></svg>
+            </button>
+        </div>
+    </header>
+
+    <div id="stage-loader" class="global-environment-loader">
+        <div class="loader-spinner-ring">
+            <div class="pokeball-center"></div>
+        </div>
+        <div class="loader-status-text">Curation Framework Initializing</div>
+    </div>
+
+    <div id="page-transition-overlay" class="page-transition-overlay"></div>
+
+    <main>
+        <div id="editorial-scroll" class="content-editorial-container">
+            <div id="pokemon-index-ticker" class="meta-index-ticker">—</div>
+            
+            <div class="hero-name-track">
+                <h1 id="hero-name-slot1" class="active">LOADING</h1>
+                <h1 id="hero-name-slot2">LOADING</h1>
+            </div>
+
+            <div class="editorial-sub-badge-track">
+                <div id="pokemon-type-badge" class="type-pill-badge">TYPE</div>
+                <div id="pokemon-form-label" class="form-editorial-label">GEN I FORM</div>
+            </div>
+
+            <div class="specifications-panel">
+                <div class="spec-item-node">
+                    <div class="spec-label">Height / Dimension</div>
+                    <div id="spec-height" class="spec-value">—</div>
+                </div>
+                <div class="spec-item-node">
+                    <div class="spec-label">Weight / Mass</div>
+                    <div id="spec-weight" class="spec-value">—</div>
+                </div>
+                <div class="spec-item-node">
+                    <div class="spec-label">Habitat / Zone</div>
+                    <div id="spec-habitat" class="spec-value">—</div>
+                </div>
+                <div class="spec-item-node">
+                    <div class="spec-label">Abilities / Traits</div>
+                    <div id="spec-abilities" class="spec-value">—</div>
+                </div>
+                <div id="spec-biography" class="biography-paragraph">
+                    Fetching ecosystem summary profile records from the database registry vectors.
+                </div>
+            </div>
+
+            <div class="stat-metrics-matrix">
+                <div class="metric-bar-wrapper">
+                    <div class="metric-header-row">
+                        <span class="metric-label-node">Hp Value</span>
+                        <span id="stat-hp" class="metric-value-node">0</span>
+                    </div>
+                    <div class="metric-track-rail"><div id="bar-hp" class="metric-fill-core"></div></div>
+                </div>
+                <div class="metric-bar-wrapper">
+                    <div class="metric-header-row">
+                        <span class="metric-label-node">Attack Output</span>
+                        <span id="stat-atk" class="metric-value-node">0</span>
+                    </div>
+                    <div class="metric-track-rail"><div id="bar-atk" class="metric-fill-core"></div></div>
+                </div>
+                <div class="metric-bar-wrapper">
+                    <div class="metric-header-row">
+                        <span class="metric-label-node">Defense Rating</span>
+                        <span id="stat-def" class="metric-value-node">0</span>
+                    </div>
+                    <div class="metric-track-rail"><div id="bar-def" class="metric-fill-core"></div></div>
+                </div>
+                <div class="metric-bar-wrapper">
+                    <div class="metric-header-row">
+                        <span class="metric-label-node">Speed Matrix</span>
+                        <span id="stat-spd" class="metric-value-node">0</span>
+                    </div>
+                    <div class="metric-track-rail"><div id="bar-spd" class="metric-fill-core"></div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="showcase-viewport-container">
+            <div id="artwork-envelope" class="artwork-space-envelope">
+                <div class="showcase-blur-glow"></div>
+                <img id="pokemon-asset-slot1" class="pokemon-render-asset active" src="" alt="Showpiece Asset Slot A">
+                <img id="pokemon-asset-slot2" class="pokemon-render-asset" src="" alt="Showpiece Asset Slot B">
+                <div id="floor-shadow-node" class="studio-floor-projection-shadow active"></div>
+            </div>
+        </div>
+    </main>
+
+    <div class="variation-editorial-dock">
+        <button id="toggle-variation-normal" class="variation-toggle-btn selected-node">Standard Edition</button>
+        <button id="toggle-variation-shiny" class="variation-toggle-btn">Shiny Edition</button>
+    </div>
+
+    <div id="search-modal-curtain" class="search-overlay-curtain">
+        <button id="close-search-btn" class="close-curtain-btn" aria-label="Close Interface">
+            <svg viewBox="0 0 24 24"><path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"/></svg>
+        </button>
+        <div class="search-panel-box">
+            <input type="text" id="search-input-node" class="search-input-field" placeholder="Search by name or reference index..." autocomplete="off">
+            <div class="search-utilities-row">
+                <span class="search-caption-info">Press enter to execute query vector</span>
+                <button id="search-random-trigger" class="random-engine-trigger">Randomize Showpiece</button>
+            </div>
+            <div id="suggestions-dock" class="suggestions-dropdown-grid"></div>
+        </div>
+    </div>
+
+    <script>
+        // Color Foundations Mapping Registry
+        const paletteShowroomRegistry = {
+            grass:    { main: '#40925A', light: '#73C78D', dark: '#1F5E34' },
+            fire:     { main: '#D35625', light: '#FA8F5C', dark: '#8C2E0B' },
+            water:    { main: '#397EC7', light: '#71A6E3', dark: '#1D4E85' },
+            electric: { main: '#D4B426', light: '#F7DB59', dark: '#8F760B' },
+            ghost:    { main: '#5C4A9E', light: '#8F7ED1', dark: '#33246E' },
+            psychic:  { main: '#C95A9E', light: '#FA8EC6', dark: '#85245E' },
+            ice:      { main: '#7CCCE0', light: '#B5EFF2', dark: '#3B93A8' },
+            dragon:   { main: '#4B55C7', light: '#7F88FA', dark: '#232A94' },
+            rock:     { main: '#8A7A50', light: '#BFA873', dark: '#54472B' },
+            ground:   { main: '#B28743', light: '#E8BF7D', dark: '#75521C' },
+            steel:    { main: '#8394A4', light: '#B7C9DB', dark: '#505F6E' },
+            fairy:    { main: '#E094C6', light: '#FFC7ED', dark: '#A3598B' },
+            poison:   { main: '#7A41A4', light: '#B073DB', dark: '#4A1D6E' },
+            flying:   { main: '#64A1E0', light: '#9CC5FA', dark: '#3168A4' },
+            bug:      { main: '#76A63C', light: '#A8D968', dark: '#456E19' },
+            normal:   { main: '#A4A08B', light: '#D6D2BF', dark: '#6E6A55' }
+        };
+
+        let universalDirectoryNames = [];
+        let currentPokemonActiveModel = null;
+        let activeIdentityToggleIndex = true; 
+        let assetVariationMode = 'normal'; 
+        let favoriteRegistry = JSON.parse(localStorage.getItem('pokedex_showroom_favorites')) || [];
+
+        let mouseInputX = 0, mouseInputY = 0;
+        let interpolatedMouseX = 0, interpolatedMouseY = 0;
+        let tiltMatrixX = 0, tiltMatrixY = 0;
+
+        let activeColorVector = { main: [178, 135, 67], light: [232, 191, 125], dark: [117, 82, 28] };
+        let destinationColorVector = { main: [178, 135, 67], light: [232, 191, 125], dark: [117, 82, 28] };
+
+        let automatedCarouselTimer = null;
+
+        const stageLoader = document.getElementById('stage-loader');
+        const customGrainCanvas = document.getElementById('matte-grain-canvas');
+        const grainCtx = customGrainCanvas.getContext('2d');
+        const bodyStyleProperties = document.documentElement.style;
+
+        const modalCurtain = document.getElementById('search-modal-curtain');
+        const searchInputNode = document.getElementById('search-input-node');
+        const suggestionsDock = document.getElementById('suggestions-dock');
+        const favoriteBtn = document.getElementById('dock-favorite-btn');
+        const galleryBtn = document.getElementById('gallery-btn');
+        const pageTransitionOverlay = document.getElementById('page-transition-overlay');
+
+        function triggerGalleryTransition() {
+            pageTransitionOverlay.classList.add('active');
+            setTimeout(() => {
+                window.location.href = 'gallery.html';
+            }, 360);
+        }
+
+        galleryBtn.addEventListener('click', triggerGalleryTransition);
+
+        function resizeAndRebuildGrain() {
+            customGrainCanvas.width = window.innerWidth / 2;
+            customGrainCanvas.height = window.innerHeight / 2;
+            const contextData = grainCtx.createImageData(customGrainCanvas.width, customGrainCanvas.height);
+            const rawBytes = contextData.data;
+            for (let pointer = 0; pointer < rawBytes.length; pointer += 4) {
+                const variance = (Math.random() - 0.5) * 20;
+                rawBytes[pointer] = 128 + variance;
+                rawBytes[pointer+1] = 128 + variance;
+                rawBytes[pointer+2] = 128 + variance;
+                rawBytes[pointer+3] = 255;
+            }
+            grainCtx.putImageData(contextData, 0, 0);
+        }
+
+        function extractHexToRgbChannels(hex) {
+            const hexClean = hex.replace("#", "");
+            const bitBlock = parseInt(hexClean, 16);
+            return [(bitBlock >> 16) & 255, (bitBlock >> 8) & 255, bitBlock & 255];
+        }
+
+        function triggerThemeColorShift(typeName) {
+            const targetPalette = paletteShowroomRegistry[typeName] || paletteShowroomRegistry['normal'];
+            destinationColorVector.main = extractHexToRgbChannels(targetPalette.main);
+            destinationColorVector.light = extractHexToRgbChannels(targetPalette.light);
+            destinationColorVector.dark = extractHexToRgbChannels(targetPalette.dark);
+        }
+
+        function mathLerp(origin, destination, factor) {
+            return (1 - factor) * origin + factor * destination;
+        }
+
+        function coreAnimationProcessingEngine() {
+            activeColorVector.main[0] = mathLerp(activeColorVector.main[0], destinationColorVector.main[0], 0.025);
+            activeColorVector.main[1] = mathLerp(activeColorVector.main[1], destinationColorVector.main[1], 0.025);
+            activeColorVector.main[2] = mathLerp(activeColorVector.main[2], destinationColorVector.main[2], 0.025);
+
+            activeColorVector.light[0] = mathLerp(activeColorVector.light[0], destinationColorVector.light[0], 0.025);
+            activeColorVector.light[1] = mathLerp(activeColorVector.light[1], destinationColorVector.light[1], 0.025);
+            activeColorVector.light[2] = mathLerp(activeColorVector.light[2], destinationColorVector.light[2], 0.025);
+
+            activeColorVector.dark[0] = mathLerp(activeColorVector.dark[0], destinationColorVector.dark[0], 0.025);
+            activeColorVector.dark[1] = mathLerp(activeColorVector.dark[1], destinationColorVector.dark[1], 0.025);
+            activeColorVector.dark[2] = mathLerp(activeColorVector.dark[2], destinationColorVector.dark[2], 0.025);
+
+            bodyStyleProperties.setProperty('--type-main', `rgb(${Math.round(activeColorVector.main[0])}, ${Math.round(activeColorVector.main[1])}, ${Math.round(activeColorVector.main[2])})`);
+            bodyStyleProperties.setProperty('--type-light', `rgb(${Math.round(activeColorVector.light[0])}, ${Math.round(activeColorVector.light[1])}, ${Math.round(activeColorVector.light[2])})`);
+            bodyStyleProperties.setProperty('--type-dark', `rgb(${Math.round(activeColorVector.dark[0])}, ${Math.round(activeColorVector.dark[1])}, ${Math.round(activeColorVector.dark[2])})`);
+
+            interpolatedMouseX = mathLerp(interpolatedMouseX, mouseInputX, 0.05);
+            interpolatedMouseY = mathLerp(interpolatedMouseY, mouseInputY, 0.05);
+
+            bodyStyleProperties.setProperty('--bg-para-x', `${interpolatedMouseX * -18}px`);
+            bodyStyleProperties.setProperty('--bg-para-y', `${interpolatedMouseY * -18}px`);
+            bodyStyleProperties.setProperty('--fg-para-x', `${interpolatedMouseX * 14}px`);
+            bodyStyleProperties.setProperty('--fg-para-y', `${interpolatedMouseY * 14}px`);
+
+            tiltMatrixX = mathLerp(tiltMatrixX, mouseInputY * -20, 0.06); 
+            tiltMatrixY = mathLerp(tiltMatrixY, mouseInputX * 20, 0.06);
+            bodyStyleProperties.setProperty('--tilt-rX', `${tiltMatrixX}deg`);
+            bodyStyleProperties.setProperty('--tilt-rY', `${tiltMatrixY}deg`);
+
+            requestAnimationFrame(coreAnimationProcessingEngine);
+        }
+
+        window.addEventListener('mousemove', (event) => {
+            mouseInputX = (event.clientX / window.innerWidth) - 0.5;
+            mouseInputY = (event.clientY / window.innerHeight) - 0.5;
+            resetAutomatedCarouselCountdown(); 
+        });
+        window.addEventListener('resize', resizeAndRebuildGrain);
+
+        function resetAutomatedCarouselCountdown() {
+            clearInterval(automatedCarouselTimer);
+            automatedCarouselTimer = setInterval(() => {
+                const targetRandomIndex = Math.floor(Math.random() * 151) + 1;
+                fetchTargetShowroomAsset(targetRandomIndex);
+            }, 5000);
+        }
+
+        async function fetchTargetShowroomAsset(identityReference) {
+            try {
+                const responseAsset = await fetch(`https://pokeapi.co/api/v2/pokemon/${identityReference}`);
+                const parsedModel = await responseAsset.json();
+
+                let zoneRecord = "Unknown Field";
+                let descriptionText = "No structured biography logs registered inside database index modules.";
+                let trueGeneration = "Gen I";
+
+                try {
+                    const responseSpecies = await fetch(parsedModel.species.url);
+                    const parsedSpecies = await responseSpecies.json();
+                    if (parsedSpecies.habitat) zoneRecord = parsedSpecies.habitat.name;
+                    if (parsedSpecies.generation) trueGeneration = parsedSpecies.generation.name.toUpperCase().replace("GENERATION-", "GEN ");
+                    
+                    const englishBioLog = parsedSpecies.flavor_text_entries.find(entry => entry.language.name === 'en');
+                    if (englishBioLog) descriptionText = englishBioLog.flavor_text.replace(/\f/g, " ");
+                } catch (spErr) { console.warn(spErr); }
+
+                currentPokemonActiveModel = {
+                    id: parsedModel.id,
+                    name: parsedModel.name,
+                    primaryType: parsedModel.types[0].type.name,
+                    height: parsedModel.height / 10, 
+                    weight: parsedModel.weight / 10,
+                    habitat: zoneRecord,
+                    generation: trueGeneration,
+                    abilities: parsedModel.abilities.map(node => node.ability.name).join(', '),
+                    biography: descriptionText,
+                    stats: {
+                        hp: parsedModel.stats.find(s => s.stat.name === 'hp').base_stat,
+                        atk: parsedModel.stats.find(s => s.stat.name === 'attack').base_stat,
+                        def: parsedModel.stats.find(s => s.stat.name === 'defense').base_stat,
+                        spd: parsedModel.stats.find(s => s.stat.name === 'speed').base_stat
+                    },
+                    sprites: {
+                        normal: parsedModel.sprites.other['official-artwork'].front_default || parsedModel.sprites.front_default,
+                        shiny: parsedModel.sprites.other['official-artwork'].front_shiny || parsedModel.sprites.front_shiny
+                    }
+                };
+
+                renderSynchronizedShowroomDisplay();
+            } catch (error) { console.error(error); }
+        }
+
+        function renderSynchronizedShowroomDisplay() {
+            if (!currentPokemonActiveModel) return;
+
+            document.getElementById('pokemon-index-ticker').innerText = `#${String(currentPokemonActiveModel.id).padStart(3, '0')}`;
+            document.getElementById('pokemon-type-badge').innerText = currentPokemonActiveModel.primaryType;
+            document.getElementById('pokemon-form-label').innerText = `${currentPokemonActiveModel.generation} Form`;
+            
+            document.getElementById('spec-height').innerText = `${currentPokemonActiveModel.height} m`;
+            document.getElementById('spec-weight').innerText = `${currentPokemonActiveModel.weight} kg`;
+            document.getElementById('spec-habitat').innerText = currentPokemonActiveModel.habitat;
+            document.getElementById('spec-abilities').innerText = currentPokemonActiveModel.abilities;
+            document.getElementById('spec-biography').innerText = currentPokemonActiveModel.biography;
+
+            const nameSlotActive = document.getElementById(`hero-name-slot${activeIdentityToggleIndex ? '1' : '2'}`);
+            const nameSlotNext = document.getElementById(`hero-name-slot${activeIdentityToggleIndex ? '2' : '1'}`);
+            
+            nameSlotNext.innerText = currentPokemonActiveModel.name.toUpperCase();
+            nameSlotActive.className = 'exit';
+            nameSlotNext.className = 'active';
+
+            const imageNodeActive = document.getElementById(`pokemon-asset-slot${activeIdentityToggleIndex ? '1' : '2'}`);
+            const imageNodeNext = document.getElementById(`pokemon-asset-slot${activeIdentityToggleIndex ? '2' : '1'}`);
+            const shadowNode = document.getElementById('floor-shadow-node');
+
+            const selectedAssetSource = assetVariationMode === 'shiny' ? currentPokemonActiveModel.sprites.shiny : currentPokemonActiveModel.sprites.normal;
+            
+            imageNodeNext.src = selectedAssetSource;
+            imageNodeNext.onload = () => {
+                triggerThemeColorShift(currentPokemonActiveModel.primaryType);
+
+                imageNodeActive.className = 'pokemon-render-asset exit';
+                imageNodeNext.className = 'pokemon-render-asset active';
+                shadowNode.className = 'studio-floor-projection-shadow active';
+
+                animateStatMeters();
+                updateFavoriteButtonUI();
+
+                activeIdentityToggleIndex = !activeIdentityToggleIndex;
+            };
+        }
+
+        function animateStatMeters() {
+            const stats = currentPokemonActiveModel.stats;
+            document.getElementById('stat-hp').innerText = stats.hp;
+            document.getElementById('stat-atk').innerText = stats.atk;
+            document.getElementById('stat-def').innerText = stats.def;
+            document.getElementById('stat-spd').innerText = stats.spd;
+
+            document.getElementById('bar-hp').style.width = `${Math.min((stats.hp / 160) * 100, 100)}%`;
+            document.getElementById('bar-atk').style.width = `${Math.min((stats.atk / 160) * 100, 100)}%`;
+            document.getElementById('bar-def').style.width = `${Math.min((stats.def / 160) * 100, 100)}%`;
+            document.getElementById('bar-spd').style.width = `${Math.min((stats.spd / 160) * 100, 100)}%`;
+        }
+
+        function toggleCurrentFavorite() {
+            if (!currentPokemonActiveModel) return;
+            const pointerIndex = favoriteRegistry.indexOf(currentPokemonActiveModel.id);
+            if (pointerIndex === -1) favoriteRegistry.push(currentPokemonActiveModel.id);
+            else favoriteRegistry.splice(pointerIndex, 1);
+            localStorage.setItem('pokedex_showroom_favorites', JSON.stringify(favoriteRegistry));
+            updateFavoriteButtonUI();
+            resetAutomatedCarouselCountdown();
+        }
+
+        function updateFavoriteButtonUI() {
+            if (currentPokemonActiveModel && favoriteRegistry.includes(currentPokemonActiveModel.id)) {
+                favoriteBtn.classList.add('active-fav');
+            } else {
+                favoriteBtn.classList.remove('active-fav');
+            }
+        }
+
+        async function runGlobalSystemBootstrap() {
+            try {
+                resizeAndRebuildGrain();
+                const universalQueryResponse = await fetch('https://pokeapi.co/api/v2/pokemon?limit=151');
+                const rawDirectoryData = await universalQueryResponse.json();
+                
+                universalDirectoryNames = rawDirectoryData.results.map((entry, index) => ({
+                    name: entry.name,
+                    id: index + 1
+                }));
+
+                const initialRandomId = Math.floor(Math.random() * 151) + 1;
+                await fetchTargetShowroomAsset(initialRandomId);
+                stageLoader.style.opacity = '0';
+                setTimeout(() => stageLoader.remove(), 600);
+
+                coreAnimationProcessingEngine();
+                resetAutomatedCarouselCountdown();
+            } catch (bootError) {
+                console.error(bootError);
+            }
+        }
+
+        function evaluateLiveSearchSuggestions() {
+            const queryClean = searchInputNode.value.toLowerCase().trim();
+            suggestionsDock.innerHTML = '';
+
+            if (queryClean.length === 0) {
+                if (favoriteRegistry.length > 0) {
+                    favoriteRegistry.slice(0, 6).forEach(favId => {
+                        const referenceRecord = universalDirectoryNames.find(p => p.id === favId);
+                        if (referenceRecord) buildSuggestionCardElement(referenceRecord);
+                    });
+                }
+                return;
+            }
+
+            universalDirectoryNames.filter(item => 
+                item.name.includes(queryClean) || String(item.id).includes(queryClean)
+            ).slice(0, 6).forEach(record => buildSuggestionCardElement(record));
+        }
+
+        function buildSuggestionCardElement(record) {
+            const buttonNode = document.createElement('button');
+            buttonNode.className = 'suggestion-item-card';
+            buttonNode.innerHTML = `
+                <span class="suggestion-name-label">${record.name}</span>
+                <span class="suggestion-index-label">#${String(record.id).padStart(3, '0')}</span>
+            `;
+            buttonNode.addEventListener('click', () => {
+                fetchTargetShowroomAsset(record.id);
+                hideShowroomSearchPanel();
+            });
+            suggestionsDock.appendChild(buttonNode);
+        }
+
+        function revealShowroomSearchPanel() {
+            clearInterval(automatedCarouselTimer); 
+            modalCurtain.classList.add('revealed-curtain');
+            searchInputNode.focus();
+            evaluateLiveSearchSuggestions();
+        }
+
+        function hideShowroomSearchPanel() {
+            modalCurtain.classList.remove('revealed-curtain');
+            searchInputNode.value = '';
+            resetAutomatedCarouselCountdown();
+        }
+
+        document.getElementById('dock-search-btn').addEventListener('click', revealShowroomSearchPanel);
+        document.getElementById('close-search-btn').addEventListener('click', hideShowroomSearchPanel);
+        favoriteBtn.addEventListener('click', toggleCurrentFavorite);
+
+        document.getElementById('search-random-trigger').addEventListener('click', () => {
+            fetchTargetShowroomAsset(Math.floor(Math.random() * 151) + 1);
+            hideShowroomSearchPanel();
+        });
+
+        searchInputNode.addEventListener('input', evaluateLiveSearchSuggestions);
+        searchInputNode.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && searchInputNode.value.trim().length > 0) {
+                fetchTargetShowroomAsset(searchInputNode.value.toLowerCase().trim());
+                hideShowroomSearchPanel();
+            }
+        });
+
+        document.getElementById('toggle-variation-normal').addEventListener('click', (e) => {
+            if (assetVariationMode === 'normal') return;
+            assetVariationMode = 'normal';
+            document.getElementById('toggle-variation-shiny').classList.remove('selected-node');
+            e.target.classList.add('selected-node');
+            renderSynchronizedShowroomDisplay();
+            resetAutomatedCarouselCountdown();
+        });
+
+        document.getElementById('toggle-variation-shiny').addEventListener('click', (e) => {
+            if (assetVariationMode === 'shiny') return;
+            assetVariationMode = 'shiny';
+            document.getElementById('toggle-variation-normal').classList.remove('selected-node');
+            e.target.classList.add('selected-node');
+            renderSynchronizedShowroomDisplay();
+            resetAutomatedCarouselCountdown();
+        });
+
+        runGlobalSystemBootstrap();
+    </script>
+</body>
+</html>
